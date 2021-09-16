@@ -28,17 +28,3 @@ RUN pip3 install -U pip
 RUN pip3 install -U setuptools
 RUN pip3 install -r requirements-dev.txt
 RUN python3 setup.py build_resources
-
-RUN python3 -m shuup_workbench migrate
-RUN python3 -m shuup_workbench shuup_init
-
-RUN echo '\
-from django.contrib.auth import get_user_model\n\
-from django.db import IntegrityError\n\
-try:\n\
-    get_user_model().objects.create_superuser("admin", "admin@admin.com", "admin")\n\
-except IntegrityError:\n\
-    pass\n'\
-| python3 -m shuup_workbench shell
-
-CMD ["python3", "-m", "shuup_workbench", "runserver", "0.0.0.0:8001"]

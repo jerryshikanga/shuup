@@ -6,6 +6,9 @@ services:
       context: .
       args:
         editable: 1
+    command: bash -c "./runserver.sh"
+    env_file:
+      - .env
     ports:
       - "8001:8001"
     volumes:

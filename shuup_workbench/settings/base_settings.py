@@ -65,6 +65,7 @@ INSTALLED_APPS = add_enabled_addons(
         "shuup.gdpr",
         "shuup.tasks",
         "shuup.discounts",
+        "shuup.core.payments.providers.pesapalprod",
         # external apps
         "bootstrap3",
         "django_countries",
