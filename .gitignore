@@ -44,3 +44,4 @@ node_modules
 .python-version
 .unit_tests
 .env
+data/

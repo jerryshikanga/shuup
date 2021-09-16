@@ -10,9 +10,7 @@ RUN apt-get update
 #        python3-pip \
 #    &&
 RUN apt-get -y install curl gnupg
-RUN apt-get --assume-yes -q install python3
-RUN apt-get --assume-yes -q install python3-pip
-RUN apt-get --assume-yes -q install python3-dev
+RUN apt-get --assume-yes -q install python3.8 python3-pip python3.8-dev
 
 RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
 RUN apt-get -y install nodejs

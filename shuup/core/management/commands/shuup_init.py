@@ -32,22 +32,17 @@ class Initializer(object):
         schema(
             Shop,
             "default",
-            name="Dawa Sawa",
-            public_name="Dawa Sawa",
-            domain="localhost",
+            name="Dawa Sawa Test Shop",
+            public_name="Dawa Sasa Test Shop",
+            domain="127.0.0.1:8001",
             status=ShopStatus.ENABLED,
             maintenance_mode=False,
         ),
         schema(ProductType, "default", name="Standard Product"),
         schema(ProductType, "digital", name="Digital Product"),
         schema(Supplier, "default", name="Default Supplier"),
-        schema(SalesUnit, "pcs", name="Pieces", symbol="pcs"),
-        schema(SalesUnit, "mls", name="Mili litres", symbol="mls"),
-        schema(SalesUnit, "tabs", name="Tablet", symbol="tab"),
         schema(CustomerTaxGroup, "default_person_customers", name="Retail Customers"),
         schema(CustomerTaxGroup, "default_company_customers", name="Company Customers"),
-        schema(Currency, "USD", decimal_places=2),
-        schema(Currency, "EUR", decimal_places=2),
     ]
 
     def __init__(self):
@@ -76,8 +71,23 @@ class Initializer(object):
 
         return obj
 
+    def create_sales_units(self):
+        print_("Creating sales units ...", end=" ")
+        sales_units = [
+            dict(identifier="pcs", name="Pieces", symbol="pcs"),
+            dict(identifier="mls", name="Mili litres", symbol="mls"),
+            dict(identifier="tabs", name="Tablet", symbol="tab"),
+        ]
+        for unit in sales_units:
+            SalesUnit.objects.get_or_create(**unit)
+        print_("done.")
+
     def create_currency(self):
-        Currency.objects.get_or_create(code="KES", decimal_places=2)
+        print_("Creating currencies ...", end=" ")
+        currency_codes = ["KES", "USD", "EUR"]
+        for code in currency_codes:
+            Currency.objects.get_or_create(code=code, decimal_places=2)
+        print_("done.")
 
     def create_payment_method(self):
         print_("Creating payment method...", end=" ")
@@ -97,7 +107,9 @@ class Initializer(object):
     def run(self):
         for schema in self.schemata:
             self.objects[schema["model"]] = self.process_schema(schema)
-
+        self.create_sales_units()
+        self.create_currency()
+        self.create_payment_method()
         # Ensure default statuses are available
         print_("Creating order statuses...", end=" ")
         create_default_order_statuses()
@@ -121,5 +133,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with atomic():
-
             Initializer().run()
