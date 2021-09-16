@@ -17,6 +17,8 @@ from six import print_
 from shuup import configuration
 from shuup.core.defaults.order_statuses import create_default_order_statuses
 from shuup.core.models import Currency, CustomerTaxGroup, ProductType, SalesUnit, Shop, ShopStatus, Supplier
+from shuup.core.models._taxes import ZERO_TAX_CLASS_ID
+from shuup.core.payments.providers.pesapalprod.constants import PESAPAL_PAYMENT_METHOD_ID
 from shuup.core.telemetry import get_installation_key, is_telemetry_enabled
 from shuup.xtheme import set_current_theme
 
@@ -30,8 +32,8 @@ class Initializer(object):
         schema(
             Shop,
             "default",
-            name="Default Shop",
-            public_name="Default Shop",
+            name="Dawa Sawa",
+            public_name="Dawa Sawa",
             domain="localhost",
             status=ShopStatus.ENABLED,
             maintenance_mode=False,
@@ -40,15 +42,12 @@ class Initializer(object):
         schema(ProductType, "digital", name="Digital Product"),
         schema(Supplier, "default", name="Default Supplier"),
         schema(SalesUnit, "pcs", name="Pieces", symbol="pcs"),
+        schema(SalesUnit, "mls", name="Mili litres", symbol="mls"),
+        schema(SalesUnit, "tabs", name="Tablet", symbol="tab"),
         schema(CustomerTaxGroup, "default_person_customers", name="Retail Customers"),
         schema(CustomerTaxGroup, "default_company_customers", name="Company Customers"),
         schema(Currency, "USD", decimal_places=2),
         schema(Currency, "EUR", decimal_places=2),
-        schema(Currency, "BRL", decimal_places=2),
-        schema(Currency, "JPY", decimal_places=0),
-        schema(Currency, "CNY", decimal_places=2),
-        schema(Currency, "GBP", decimal_places=2),
-        schema(Currency, "CAD", decimal_places=2),
     ]
 
     def __init__(self):
@@ -77,6 +76,24 @@ class Initializer(object):
 
         return obj
 
+    def create_currency(self):
+        Currency.objects.get_or_create(code="KES", decimal_places=2)
+
+    def create_payment_method(self):
+        print_("Creating payment method...", end=" ")
+        kwargs = dict(name="Pesapal", enabled=True, identifier=PESAPAL_PAYMENT_METHOD_ID)
+        from shuup.core.models import PaymentProcessor
+        processor, _ = PaymentProcessor.objects.get_or_create(**kwargs)
+        from shuup.core.models import TaxClass
+        zero_tax, _ = TaxClass.objects.get_or_create(identifier=ZERO_TAX_CLASS_ID)
+        method_args = dict(payment_processor=processor, identifier=PESAPAL_PAYMENT_METHOD_ID,
+                           enabled=True, shop_id=1, name='Pesapal', tax_class=zero_tax,
+                           description='Pay via Card, banks and Mpesa')
+        from shuup.core.models import PaymentMethod
+        method, _ = PaymentMethod.objects.get_or_create(**method_args)
+        print_("done.")
+        return method
+
     def run(self):
         for schema in self.schemata:
             self.objects[schema["model"]] = self.process_schema(schema)
@@ -104,4 +121,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with atomic():
+
             Initializer().run()
