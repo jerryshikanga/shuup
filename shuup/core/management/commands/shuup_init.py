@@ -29,29 +29,24 @@ def schema(model, identifier, **info):
 
 class Initializer(object):
     schemata = [
-        schema(
-            Shop,
-            "default",
-            name="Dawa Sawa",
-            public_name="Dawa Sawa",
-            domain="localhost",
-            status=ShopStatus.ENABLED,
-            maintenance_mode=False,
-        ),
         schema(ProductType, "default", name="Standard Product"),
         schema(ProductType, "digital", name="Digital Product"),
         schema(Supplier, "default", name="Default Supplier"),
-        schema(SalesUnit, "pcs", name="Pieces", symbol="pcs"),
-        schema(SalesUnit, "mls", name="Mili litres", symbol="mls"),
-        schema(SalesUnit, "tabs", name="Tablet", symbol="tab"),
         schema(CustomerTaxGroup, "default_person_customers", name="Retail Customers"),
         schema(CustomerTaxGroup, "default_company_customers", name="Company Customers"),
-        schema(Currency, "USD", decimal_places=2),
-        schema(Currency, "EUR", decimal_places=2),
     ]
 
     def __init__(self):
         self.objects = {}
+
+    def create_default_shop(self):
+        kwargs = dict(identifier="default", domain="127.0.0.1:8001", status=ShopStatus.ENABLED,
+                      maintenance_mode=False, currency="KES")
+        shop, _ = Shop.objects.get_or_create(**kwargs)
+        shop.name = "Dawa Sasa Test Shop"
+        shop.public_name = "Dawa Sasa Test Shop"
+        shop.save()
+        return shop
 
     def process_schema(self, schema):
         model = schema["model"]
@@ -76,28 +71,55 @@ class Initializer(object):
 
         return obj
 
-    def create_currency(self):
-        Currency.objects.get_or_create(code="KES", decimal_places=2)
+    def create_sales_units(self):
+        print_("Creating sales units ...", end=" ")
+        sales_units = [
+            dict(identifier="pcs", name="Pieces", symbol="pcs"),
+            dict(identifier="mls", name="Mili litres", symbol="mls"),
+            dict(identifier="tabs", name="Tablet", symbol="tab"),
+        ]
+        for unit in sales_units:
+            name = unit.pop('name')
+            unit, _ = SalesUnit.objects.get_or_create(**unit)
+            unit.name = name
+            unit.save()
+        print_("Done.")
 
-    def create_payment_method(self):
+    def create_currency(self):
+        print_("Creating currencies ...", end=" ")
+        currency_codes = ["KES", "USD", "EUR"]
+        Currency.objects.all().delete()
+        for code in currency_codes:
+            Currency.objects.get_or_create(code=code, decimal_places=2)
+        print_("done.")
+
+    def create_payment_method(self, shop):
         print_("Creating payment method...", end=" ")
-        kwargs = dict(name="Pesapal", enabled=True, identifier=PESAPAL_PAYMENT_METHOD_ID)
+        kwargs = dict(enabled=True, identifier=PESAPAL_PAYMENT_METHOD_ID)
         from shuup.core.models import PaymentProcessor
         processor, _ = PaymentProcessor.objects.get_or_create(**kwargs)
+        processor.name = "Pesapal"
+        processor.save()
         from shuup.core.models import TaxClass
         zero_tax, _ = TaxClass.objects.get_or_create(identifier=ZERO_TAX_CLASS_ID)
         method_args = dict(payment_processor=processor, identifier=PESAPAL_PAYMENT_METHOD_ID,
-                           enabled=True, shop_id=1, name='Pesapal', tax_class=zero_tax,
-                           description='Pay via Card, banks and Mpesa')
+                           enabled=True, shop=shop, tax_class=zero_tax,
+                           )
         from shuup.core.models import PaymentMethod
         method, _ = PaymentMethod.objects.get_or_create(**method_args)
+        method.name = 'Pesapal'
+        method.description = 'Pay via Card, banks and Mpesa'
+        method.save()
         print_("done.")
         return method
 
     def run(self):
+        shop = self.create_default_shop()
+        self.create_currency()
         for schema in self.schemata:
             self.objects[schema["model"]] = self.process_schema(schema)
-
+        self.create_sales_units()
+        self.create_payment_method(shop)
         # Ensure default statuses are available
         print_("Creating order statuses...", end=" ")
         create_default_order_statuses()
@@ -121,5 +143,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with atomic():
-
             Initializer().run()

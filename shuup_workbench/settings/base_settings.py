@@ -65,6 +65,7 @@ INSTALLED_APPS = add_enabled_addons(
         "shuup.gdpr",
         "shuup.tasks",
         "shuup.discounts",
+        "shuup.core.payments.providers.pesapalprod",
         # external apps
         "bootstrap3",
         "django_countries",
@@ -95,13 +96,14 @@ MIDDLEWARE = [
 ROOT_URLCONF = "shuup_workbench.urls"
 WSGI_APPLICATION = "shuup_workbench.wsgi.application"
 
-_sqlite_folder = os.path.join(BASE_DIR, "../.sqlite")
-if not os.path.exists(_sqlite_folder):
-    os.mkdir(_sqlite_folder)
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(_sqlite_folder, "db.sqlite3"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', default='postgres'),
+        'USER': os.environ.get('DB_USER', default='postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', default='postgres'),
+        'HOST': os.environ.get('DB_HOST', default='db'),
+        'PORT': os.environ.get('DB_PORT', default=5432),
     }
 }
 
@@ -113,7 +115,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 LOGIN_REDIRECT_URL = "/"
 SOUTH_TESTS_MIGRATE = False  # Makes tests that much faster.
-DEFAULT_FROM_EMAIL = "no-reply@example.com"
+DEFAULT_FROM_EMAIL = "no-reply@dawasasa.co.ke"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # LOGGING = {
@@ -136,15 +138,15 @@ LANGUAGES = [
     # same spelling for the language names for utilizing the language
     # name translations from Django.
     ("en", "English"),
-    ("fi", "Finnish"),
-    ("it", "Italian"),
-    ("ja", "Japanese"),
-    ("pt-br", "Portuguese (Brazil)"),
-    ("pt-pt", "Portuguese (Portugal)"),
-    ("ru", "Russian"),
-    ("sv", "Swedish"),
-    ("zh-hans", "Simplified Chinese"),
-    ("es", "Spanish"),
+    # ("fi", "Finnish"),
+    # ("it", "Italian"),
+    # ("ja", "Japanese"),
+    # ("pt-br", "Portuguese (Brazil)"),
+    # ("pt-pt", "Portuguese (Portugal)"),
+    # ("ru", "Russian"),
+    # ("sv", "Swedish"),
+    # ("zh-hans", "Simplified Chinese"),
+    # ("es", "Spanish"),
 ]
 
 PARLER_DEFAULT_LANGUAGE_CODE = "en"
