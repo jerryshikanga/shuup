@@ -25,4 +25,3 @@ WORKDIR /app
 RUN pip3 install -U pip
 RUN pip3 install -U setuptools
 RUN pip3 install -r requirements-dev.txt
-RUN python3 setup.py build_resources

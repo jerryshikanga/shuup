@@ -99,11 +99,11 @@ WSGI_APPLICATION = "shuup_workbench.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': os.environ.get('DB_NAME', default='postgres'),
+        'USER': os.environ.get('DB_USER', default='postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', default='postgres'),
+        'HOST': os.environ.get('DB_HOST', default='db'),
+        'PORT': os.environ.get('DB_PORT', default=5432),
     }
 }
 
@@ -115,7 +115,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 LOGIN_REDIRECT_URL = "/"
 SOUTH_TESTS_MIGRATE = False  # Makes tests that much faster.
-DEFAULT_FROM_EMAIL = "no-reply@example.com"
+DEFAULT_FROM_EMAIL = "no-reply@dawasasa.co.ke"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # LOGGING = {
@@ -138,15 +138,15 @@ LANGUAGES = [
     # same spelling for the language names for utilizing the language
     # name translations from Django.
     ("en", "English"),
-    ("fi", "Finnish"),
-    ("it", "Italian"),
-    ("ja", "Japanese"),
-    ("pt-br", "Portuguese (Brazil)"),
-    ("pt-pt", "Portuguese (Portugal)"),
-    ("ru", "Russian"),
-    ("sv", "Swedish"),
-    ("zh-hans", "Simplified Chinese"),
-    ("es", "Spanish"),
+    # ("fi", "Finnish"),
+    # ("it", "Italian"),
+    # ("ja", "Japanese"),
+    # ("pt-br", "Portuguese (Brazil)"),
+    # ("pt-pt", "Portuguese (Portugal)"),
+    # ("ru", "Russian"),
+    # ("sv", "Swedish"),
+    # ("zh-hans", "Simplified Chinese"),
+    # ("es", "Spanish"),
 ]
 
 PARLER_DEFAULT_LANGUAGE_CODE = "en"
