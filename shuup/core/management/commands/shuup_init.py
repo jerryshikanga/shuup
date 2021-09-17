@@ -80,8 +80,10 @@ class Initializer(object):
         ]
         for unit in sales_units:
             name = unit.pop('name')
+            symbol = unit.pop('symbol')
             unit, _ = SalesUnit.objects.get_or_create(**unit)
             unit.name = name
+            unit.symbol = symbol
             unit.save()
         print_("Done.")
 

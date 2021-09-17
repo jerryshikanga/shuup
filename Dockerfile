@@ -1,18 +1,12 @@
-FROM ubuntu:18.04 as base
+FROM ubuntu:20.04 as base
 
 USER root
 RUN apt-get update
-#    && apt --assume-yes install \
-#        libpangocairo-1.0-0 \
-#        python3 \
-#        python3-dev \
-#        python3-pil \
-#        python3-pip \
-#    &&
 RUN apt-get -y install curl gnupg
-RUN apt-get --assume-yes -q install python3.8 python3-pip python3.8-dev
+RUN apt-get --assume-yes -q install python3.8 python3-pip python3.8-dev libpq-dev
+RUN alias python3=python3.8
 
-RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x  | bash -
 RUN apt-get -y install nodejs
 
 RUN rm -rf /var/lib/apt/lists/ /var/cache/apt/

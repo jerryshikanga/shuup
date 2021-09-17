@@ -67,4 +67,4 @@ zipp==3.4.1               # via importlib-metadata
 # pip                       # via prequ
 
 pesapal==0.0.6
-psycopg2-binary==2.9.1
+psycopg2-binary==2.8.6

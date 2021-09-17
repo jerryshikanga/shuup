@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python3 setup.py build_resources
+# python3 setup.py build_resources RUN thus manually to save on boot time
 python3 -m shuup_workbench migrate
 python3 -m shuup_workbench shuup_init
 
