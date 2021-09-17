@@ -40,9 +40,12 @@ class Initializer(object):
         self.objects = {}
 
     def create_default_shop(self):
-        kwargs = dict(identifier="default", domain="127.0.0.1:8001", status=ShopStatus.ENABLED,
-                      maintenance_mode=False, currency="KES")
+        kwargs = dict(identifier="default")
         shop, _ = Shop.objects.get_or_create(**kwargs)
+        shop.domain = "127.0.0.1:8001"
+        shop.status = ShopStatus.ENABLED
+        shop.maintenance_mode = False
+        shop.currency = "KES"
         shop.name = "Dawa Sasa Test Shop"
         shop.public_name = "Dawa Sasa Test Shop"
         shop.save()
@@ -97,20 +100,23 @@ class Initializer(object):
 
     def create_payment_method(self, shop):
         print_("Creating payment method...", end=" ")
-        kwargs = dict(enabled=True, identifier=PESAPAL_PAYMENT_METHOD_ID)
+        kwargs = dict(identifier=PESAPAL_PAYMENT_METHOD_ID)
         from shuup.core.models import PaymentProcessor
         processor, _ = PaymentProcessor.objects.get_or_create(**kwargs)
         processor.name = "Pesapal"
+        processor.enabled = True
         processor.save()
         from shuup.core.models import TaxClass
         zero_tax, _ = TaxClass.objects.get_or_create(identifier=ZERO_TAX_CLASS_ID)
-        method_args = dict(payment_processor=processor, identifier=PESAPAL_PAYMENT_METHOD_ID,
-                           enabled=True, shop=shop, tax_class=zero_tax,
-                           )
+        method_args = dict(identifier=PESAPAL_PAYMENT_METHOD_ID)
         from shuup.core.models import PaymentMethod
         method, _ = PaymentMethod.objects.get_or_create(**method_args)
         method.name = 'Pesapal'
+        method.payment_processor = processor
         method.description = 'Pay via Card, banks and Mpesa'
+        method.enabled = True
+        method.shop = shop
+        method.tax_class = zero_tax,
         method.save()
         print_("done.")
         return method
