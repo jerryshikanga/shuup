@@ -9,6 +9,7 @@ import os
 from shuup.addons import add_enabled_addons
 
 BASE_DIR = os.getenv("SHUUP_WORKBENCH_BASE_DIR") or (os.path.dirname(os.path.dirname(__file__)))
+
 SECRET_KEY = "Shhhhh"
 MIRAGE_SECRET_KEY = "Shhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
 DEBUG = True

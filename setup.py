@@ -11,7 +11,7 @@ import sys
 import shuup_setup_utils as utils
 
 TOPDIR = os.path.abspath(os.path.dirname(__file__))
-LONG_DESCRIPTION_FILE = os.path.join(TOPDIR, "README.rst")
+LONG_DESCRIPTION_FILE = os.path.join(TOPDIR, "README.md")
 VERSION_FILE = os.path.join(TOPDIR, "shuup", "_version.py")
 
 # Release instructions

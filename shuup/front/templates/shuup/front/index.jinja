@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ static("img/shuup.ico") }}">
     <link rel="stylesheet" href="{{ shuup_static("shuup/front/css/style.css") }}">
-    <title>{% trans %}Welcome to Shuup!{% endtrans %}</title>
+    <title>{% trans %}Welcome to {{ request.shop.public_name }}!{% endtrans %}</title>
     <style>
         h1 {
             font-weight: normal;

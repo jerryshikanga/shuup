@@ -100,7 +100,7 @@ SHUUP_CHECKOUT_CONFIRM_FORM_PROPERTIES = {}
 #: The default "Shuup powered by" content. This content is rendered in theme bottom
 #: by default at `shuup.front.templates.shuup.front.macros.footer.jinja`.
 SHUUP_FRONT_POWERED_BY_CONTENT = """
-    <p class="powered">Powered by <a target="_blank" href="https://shuup.com">Shuup</a></p>
+    <p class="powered">Dawa Sasa is licensed by KMPDU under license number 1234</a></p>
 """.strip()
 
 #: Override sort and filters labels with your own.

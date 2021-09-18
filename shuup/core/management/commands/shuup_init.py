@@ -40,6 +40,7 @@ class Initializer(object):
         self.objects = {}
 
     def create_default_shop(self):
+        print_("Creating shop ...", end=" ")
         kwargs = dict(identifier="default")
         shop, _ = Shop.objects.get_or_create(**kwargs)
         shop.domain = "127.0.0.1:8001"
@@ -49,6 +50,7 @@ class Initializer(object):
         shop.name = "Dawa Sasa Test Shop"
         shop.public_name = "Dawa Sasa Test Shop"
         shop.save()
+        print(f"ID {shop.id} Done.")
         return shop
 
     def process_schema(self, schema):
@@ -108,15 +110,13 @@ class Initializer(object):
         processor.save()
         from shuup.core.models import TaxClass
         zero_tax, _ = TaxClass.objects.get_or_create(identifier=ZERO_TAX_CLASS_ID)
-        method_args = dict(identifier=PESAPAL_PAYMENT_METHOD_ID)
+        method_args = dict(identifier=PESAPAL_PAYMENT_METHOD_ID, shop=shop, tax_class=zero_tax)
         from shuup.core.models import PaymentMethod
         method, _ = PaymentMethod.objects.get_or_create(**method_args)
         method.name = 'Pesapal'
         method.payment_processor = processor
         method.description = 'Pay via Card, banks and Mpesa'
         method.enabled = True
-        method.shop = shop
-        method.tax_class = zero_tax,
         method.save()
         print_("done.")
         return method

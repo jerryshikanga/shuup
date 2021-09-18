@@ -234,7 +234,9 @@
     <div class="logo{% if not cropped_logo %} no-image{% endif %}">
         {% if cropped_logo %}
             <a href="/" data-toggle="tooltip" data-placement="bottom" title="{{ request.shop }} {% trans %}Home{% endtrans %}" class="image">
+                <h4>{{ request.shop.public_name.split()[0] }}</h4>
                 <img src="{{ cropped_logo }}" alt="{{ request.shop }}">
+                <h4>{{ request.shop.public_name.split()[1] }}</h4>
             </a>
         {% else %}
             <a href="/" class="text"><h4>{{ request.shop.public_name }}</h4></a>
